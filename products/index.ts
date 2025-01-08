@@ -19,7 +19,7 @@ const startApp = async () => {
             res.send("hello from products");
         })
         app.get('/product',(req:Request,res:Response)=>{
-            res.send("vinay");
+            res.send("viny");
         })
         app.listen(port,()=>{
             console.log(`server running on port ${port}`);

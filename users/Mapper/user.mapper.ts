@@ -1,7 +1,7 @@
 // src/User/mappers/user.mapper.ts
 
-import { User } from '@src/User/Model/user.model'
-import { UserResponse, CreateUserRequest } from "@src/User/DTO/user.dto";
+import { User } from '@root/Model/user.model'
+import { UserResponse, CreateUserRequest } from "@root/DTO/user.dto";
 
 export class UserMapper {
     static toResponse(user: User): UserResponse {

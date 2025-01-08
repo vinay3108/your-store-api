@@ -1,10 +1,10 @@
 import express, { Request, Response } from "express";
-import { signUp, loginUser,getUsers } from "./Controller/user.controller";
-import { validateRequest } from "./Middlewares/validateRequest.middleware";
+import { signUp, loginUser,getUsers } from "@root/Controller/user.controller";
+import { validateRequest } from "@root/Middlewares/validateRequest.middleware";
 import {
     createUserValidation,
     loginUserValidation,
-} from "./Validation/user.validation";
+} from "@root/Validation/user.validation";
 
 export default function AccountRouter() {
     const router = express.Router();

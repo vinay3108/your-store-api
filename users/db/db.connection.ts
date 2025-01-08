@@ -1,5 +1,5 @@
 import { DataSource } from "typeorm";
-import { User } from "../src/User/Model/user.model";
+import { User } from "@root/Model/user.model";
 
 export default new DataSource({
     type: "mysql",

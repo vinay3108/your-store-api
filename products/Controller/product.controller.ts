@@ -1,11 +1,11 @@
-import { Request, Response, NextFunction } from "express";
 import { Product } from "@root/Model/product.model";
-import mysqlDataSource from "@root/db/db.connection";
+import mysqlDataSource from "@root/DB/db.connection";
+import { ExcelService } from '@root/Excel/excel.service';
+import { Request, Response, NextFunction } from "express";
 import { AppError } from "@root/Middlewares/errorHandler.middleware";
 
 const productRepository = mysqlDataSource.getRepository(Product);
 
-// Create a new product
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
     const { name, type, brand, imageUrl, rating } = req.body;
 
@@ -24,7 +24,41 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
     }
 };
 
-// Get all products
+export const createBulkProducts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (!req.file) {
+            res.status(400).json({ error: 'No file uploaded' });
+            return;
+        }
+
+        const { path } = req.file;
+        console.log('Uploaded file path:', path);
+
+        const productsData = await new ExcelService().readExcelFile(path);
+        console.log('Parsed Excel Data:', productsData);
+
+        if (!Array.isArray(productsData) || productsData.length === 0) {
+            res.status(400).json({ error: 'No valid data found in the Excel file' });
+            return;
+        }
+
+        const productRepository = mysqlDataSource.getRepository(Product);
+
+        const transformedData = productsData.map(data => productRepository.create(data));
+
+        const savedProducts = await productRepository.manager.transaction(
+            async (transactionManager) => {
+                return await transactionManager.save(transformedData);
+            }
+        );
+
+        res.status(201).json({ message: 'Products uploaded successfully', products: savedProducts });
+    } catch (error) {
+        console.error('Error processing bulk upload:', error);
+        next(error);
+    }
+};
+
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const products = await productRepository.find();
@@ -34,7 +68,6 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-// Get a single product by ID
 export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
 
@@ -49,7 +82,6 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
     }
 };
 
-// Update a product by ID
 export const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const { name, type, brand, imageUrl, rating } = req.body;
@@ -73,7 +105,6 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
     }
 };
 
-// Delete a product by ID
 export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
 

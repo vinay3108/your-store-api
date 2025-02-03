@@ -26,6 +26,9 @@ export const createProductValidation = Joi.object({
         'number.max': 'Rating should be at most 5.'
     }),
 });
+export const bulkCreateProductValidation = Joi.object({
+    bulk_file:Joi.required()
+})
 
 // Validation schema for updating a product
 export const updateProductValidation = Joi.object({

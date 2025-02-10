@@ -1,11 +1,11 @@
 import { DataSource } from "typeorm";
-import { Product } from "../Model/product.model";
+import { Product } from "../Model/products.model";
 
 export default new DataSource({
-    type: "mysql",
-    host: process.env.MYSQL_HOST,
-    port: 3306,
-    username: 'vinay',
+    type: "postgres",
+    host: "localhost",
+    port: 5432,
+    username: 'postgres',
     password: "Vinay@123",
     database:'finance_management',
     entities: [Product],

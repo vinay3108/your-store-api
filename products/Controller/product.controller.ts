@@ -1,4 +1,4 @@
-import { Product } from "@root/Model/product.model";
+import { Product } from "@root/Model/products.model";
 import mysqlDataSource from "@root/DB/db.connection";
 import { ExcelService } from '@root/Excel/excel.service';
 import { Request, Response, NextFunction } from "express";

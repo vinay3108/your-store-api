@@ -1,6 +1,6 @@
 // src/Product/mappers/product.mapper.ts
 
-import { Product } from '@root/Model/product.model';
+import { Product } from '@root/Model/products.model';
 import { ProductResponse, CreateProductRequest } from '@root/DTO/product.dto';
 
 export class ProductMapper {

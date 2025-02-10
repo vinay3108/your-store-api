@@ -17,8 +17,8 @@ app.use(express.static("public"));
 
 const startApp = async () => {
     try {
-        const mysql = await dbConnection.initialize();
-        console.log("MYSQL connected:", mysql.isInitialized);
+        const db = await dbConnection.initialize();
+        console.log("DATABASE connected:", db.isInitialized);
         app.get("/", (req: Request, res: Response) => {
             res.send("hello from Products");
         });

@@ -1,122 +1,52 @@
-import { Product } from "@root/Model/products.model";
-import mysqlDataSource from "@root/DB/db.connection";
-import { ExcelService } from '@root/Excel/excel.service';
-import { Request, Response, NextFunction } from "express";
-import { AppError } from "@root/Middlewares/errorHandler.middleware";
+import { Request, Response } from "express";
+import { ProductService } from "@root/Services/product.service";
 
-const productRepository = mysqlDataSource.getRepository(Product);
+const productService = new ProductService();
 
-export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
-    const { name, type, brand, imageUrl, rating } = req.body;
-
-    const product = new Product();
-    product.name = name;
-    product.type = type;
-    product.brand = brand;
-    product.imageUrl = imageUrl;
-    product.rating = rating;
-
-    try {
-        const savedProduct = await productRepository.save(product);
-        res.status(201).json({ product: savedProduct });
-    } catch (error) {
-        return next(new AppError("Error creating product", 500));
-    }
-};
-
-export const createBulkProducts = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        if (!req.file) {
-            res.status(400).json({ error: 'No file uploaded' });
-            return;
+export class ProductController {
+    static async create(req: Request, res: Response) {
+        try {
+            const product = await productService.createProduct(req.body);
+            res.status(201).json(product);
+        } catch (error) {
+            res.status(500).json({ message: "Error creating product", error });
         }
+    }
 
-        const { path } = req.file;
-        console.log('Uploaded file path:', path);
-
-        const productsData = await new ExcelService().readExcelFile(path);
-        console.log('Parsed Excel Data:', productsData);
-
-        if (!Array.isArray(productsData) || productsData.length === 0) {
-            res.status(400).json({ error: 'No valid data found in the Excel file' });
-            return;
+    static async getAll(req: Request, res: Response) {
+        try {
+            const products = await productService.getAllProducts();
+            res.status(200).json(products);
+        } catch (error) {
+            res.status(500).json({ message: "Error fetching products", error });
         }
-
-        const productRepository = mysqlDataSource.getRepository(Product);
-
-        const transformedData = productsData.map(data => productRepository.create(data));
-
-        const savedProducts = await productRepository.manager.transaction(
-            async (transactionManager) => {
-                return await transactionManager.save(transformedData);
-            }
-        );
-
-        res.status(201).json({ message: 'Products uploaded successfully', products: savedProducts });
-    } catch (error) {
-        console.error('Error processing bulk upload:', error);
-        next(error);
     }
-};
 
-export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const products = await productRepository.find();
-        res.status(200).json({ products });
-    } catch (error) {
-        return next(new AppError("Error fetching products", 500));
-    }
-};
-
-export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
-
-    try {
-        const product = await productRepository.findOne({ where: { id: Number(id) } });
-        if (!product) {
-            return next(new AppError("Product not found", 404));
+    static async getById(req: Request, res: Response) {
+        try {
+            const product = await productService.getProductById(Number(req.params.id));
+            if (!product) return res.status(404).json({ message: "Product not found" });
+            res.status(200).json(product);
+        } catch (error) {
+            res.status(500).json({ message: "Error fetching product", error });
         }
-        res.status(200).json({ product });
-    } catch (error) {
-        return next(new AppError("Error fetching product", 500));
     }
-};
 
-export const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
-    const { name, type, brand, imageUrl, rating } = req.body;
-
-    try {
-        const product = await productRepository.findOne({ where: { id: Number(id) } });
-        if (!product) {
-            return next(new AppError("Product not found", 404));
+    static async update(req: Request, res: Response) {
+        try {
+            const product = await productService.updateProduct(Number(req.params.id), req.body);
+            res.status(200).json(product);
+        } catch (error) {
+            res.status(500).json({ message: "Error updating product", error });
         }
-
-        product.name = name || product.name;
-        product.type = type || product.type;
-        product.brand = brand || product.brand;
-        product.imageUrl = imageUrl || product.imageUrl;
-        product.rating = rating || product.rating;
-
-        const updatedProduct = await productRepository.save(product);
-        res.status(200).json({ product: updatedProduct });
-    } catch (error) {
-        return next(new AppError("Error updating product", 500));
     }
-};
 
-export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
-
-    try {
-        const product = await productRepository.findOne({ where: { id: Number(id) } });
-        if (!product) {
-            return next(new AppError("Product not found", 404));
+    static async delete(req: Request, res: Response) {
+        try {
+            await productService.deleteProduct(Number(req.params.id));
+            res.status(200).json({ message: "Product deleted successfully" });
+        } catch (error) {
+            res.status(500).json({ message: "Error deleting product", error });
         }
-
-        await productRepository.remove(product);
-        res.status(204).send(); // No content
-    } catch (error) {
-        return next(new AppError("Error deleting product", 500));
     }
-};
+}

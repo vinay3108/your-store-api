@@ -16,13 +16,13 @@ export class AddIndexesOnProducts1739176064353 implements MigrationInterface {
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
-            DROP INDEX idx_shop_products_shop;
+            DROP INDEX IF EXISTS idx_shop_products_shop;
         `);
         await queryRunner.query(`
-            DROP INDEX idx_shop_products_product;
+            DROP INDEX IF EXISTS idx_shop_products_product;
         `);
         await queryRunner.query(`
-            DROP INDEX idx_shop_product_discounts;
+            DROP INDEX IF EXISTS idx_shop_product_discounts;
         `);
     }
 

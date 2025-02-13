@@ -2,6 +2,7 @@ import { DataSource } from "typeorm";
 import { Brand } from "../Model/brand.model";
 import { Category } from "../Model/categories.model";
 import { Product } from "../Model/products.model";
+import { ProductImages } from "../Model/product_images.model"; // Ensure this model exists
 import { Shop } from "../Model/shop.model";
 import { ShopProduct } from "../Model/shop_products.model";
 import { faker } from "@faker-js/faker";
@@ -13,6 +14,7 @@ export const seedDatabase = async (dataSource: DataSource) => {
     const brandRepo = dataSource.getRepository(Brand);
     const categoryRepo = dataSource.getRepository(Category);
     const productRepo = dataSource.getRepository(Product);
+    const productImageRepo = dataSource.getRepository(ProductImages);
     const shopRepo = dataSource.getRepository(Shop);
     const shopProductRepo = dataSource.getRepository(ShopProduct);
 
@@ -58,6 +60,20 @@ export const seedDatabase = async (dataSource: DataSource) => {
         products.push(await productRepo.save(product));
     }
 
+    // Insert Product Images (Each product gets 2-3 images)
+    for (const product of products) {
+        const numImages = faker.number.int({ min: 2, max: 3 });
+
+        for (let i = 0; i < numImages; i++) {
+            await productImageRepo.save({
+                product: product,
+                image_url: faker.image.urlLoremFlickr({ category: "product" }), // Generates a random product image URL
+                alt_text: `Image of ${product.name}`,
+                display_order: i + 1,
+            });
+        }
+    }
+
     // Insert Shop Products (Mapping products to shops)
     for (let i = 0; i < 15; i++) {
         await shopProductRepo.save({
@@ -68,6 +84,6 @@ export const seedDatabase = async (dataSource: DataSource) => {
         });
     }
 
-    console.log("Seeding completed!");
+    console.log("✅ Seeding completed!");
     await dataSource.destroy();
 };

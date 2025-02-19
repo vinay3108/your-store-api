@@ -3,6 +3,7 @@ import cors from 'cors';
 require("module-alias/register");
 import { Request, Response } from "express";
 import ProductRouter from "@root/Routes/product.route";
+import ProductDetailsRouter from "@root/Routes/product-details.route";
 import dbConnection from "./DB/db.connection";
 import dotenv from "dotenv";
 
@@ -28,6 +29,7 @@ const startApp = async () => {
             console.log(`server running on port ${port}`);
         });
         app.use("/products", ProductRouter());
+        app.use("/product-details", ProductDetailsRouter());
     } catch (err) {
         console.error("Failed to start application due to DB error:", err);
         process.exit(1); // Exit the application on failure

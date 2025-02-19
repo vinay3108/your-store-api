@@ -53,4 +53,20 @@ export class ProductController {
             res.status(500).json({ message: "Error deleting product", error });
         }
     }
+    static async getProductByBrand(req:Request, res:Response){
+        try{
+            const products = await productService.getProductByBrandId(Number(req.params.brandId));
+            res.status(200).json(products);
+        }catch(error){
+            res.status(500).json({ message: "Error deleting product", error });
+        }
+    }
+    static async getDetail(req:Request, res:Response){
+        try{
+            const products = await productService.getProductDetail(Number(req.params.id));
+            res.status(200).json(products);
+        }catch(error){
+            res.status(500).json({ message: "Error deleting product", error });
+        }
+    }
 }

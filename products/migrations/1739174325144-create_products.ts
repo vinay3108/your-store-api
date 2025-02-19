@@ -16,8 +16,12 @@ export class CreateProducts1739174325144 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
-            DROP TABLE products;
-        `);
+        // Drop dependent tables first
+        await queryRunner.query(`DROP TABLE IF EXISTS product_images CASCADE;`);
+        await queryRunner.query(`DROP TABLE IF EXISTS product_details CASCADE;`);
+        await queryRunner.query(`DROP TABLE IF EXISTS shop_products CASCADE;`);
+        
+        // Now drop the products table safely
+        await queryRunner.query(`DROP TABLE IF EXISTS products CASCADE;`);
     }
 }

@@ -16,6 +16,8 @@ export default function ProductRouter() {
     router.get("/:id", ProductController.getById);
     router.put("/:id", ProductController.update);
     router.delete("/:id", ProductController.delete);
+    router.get("/:id/detail", ProductController.getDetail);
+    router.get("/brand/:brandId", ProductController.getProductByBrand);
 
 
     return router;

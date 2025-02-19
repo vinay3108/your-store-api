@@ -7,6 +7,10 @@ import { Category } from "../Model/categories.model";
 import { ShopProduct } from "../Model/shop_products.model";
 import { ShopProductDiscount } from "../Model/shop_product_discounts.model";
 import { ProductImages } from "../Model/product_images.model";
+import { ProductDetail } from "../Model/product_details.model";
+import { ProductIngredient } from "../Model/product_ingredients.model";
+import { ProductKeyFeature } from "../Model/product_key_features.model";
+import { ProductReturnPolicy } from "../Model/product_return_policy.model";
 
 export default new DataSource({
     type: process.env.DB_TYPE as "postgres",
@@ -15,9 +19,20 @@ export default new DataSource({
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [Product, Shop, Category, Brand, ShopProduct, ShopProductDiscount, ProductImages],
-    migrations: [process.env.MIGRATIONS], 
+    entities: [
+        Product,
+        Shop,
+        Category,
+        Brand,
+        ShopProduct,
+        ShopProductDiscount,
+        ProductImages,
+        ProductDetail,
+        ProductIngredient,
+        ProductKeyFeature,
+        ProductReturnPolicy,
+    ],
+    migrations: ["./migrations/*.ts"],
     synchronize: process.env.SYNCHRONIZE === "true",
     logging: process.env.LOGGING === "true",
-})
-
+});

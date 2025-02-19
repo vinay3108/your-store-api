@@ -21,7 +21,6 @@ export class ProductService {
             relations: ["brand", "category", "shopProducts"],
         });
     }
-    
 
     async updateProduct(id: number, data: Partial<Product>) {
         await this.productRepository.update(id, data);
@@ -30,5 +29,18 @@ export class ProductService {
 
     async deleteProduct(id: number) {
         return await this.productRepository.delete(id);
+    }
+    async getProductByBrandId(id: number) {
+        return await this.productRepository.find({
+            where: { brand: { id } },
+            relations: ["brand"],
+            take: 10,
+        });
+    }
+    async getProductDetail(id:number){
+        return await this.productRepository.find({
+            where : {id},
+            relations:["details","images"]
+        })
     }
 }

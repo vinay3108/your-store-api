@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn, CreateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne,OneToOne, JoinColumn, CreateDateColumn } from "typeorm";
 import { Category } from "./categories.model";
 import { Brand } from "./brand.model";
 import { ShopProduct } from "./shop_products.model";
+import { ProductDetail } from "./product_details.model";
 import { ProductImages } from "./product_images.model";
 @Entity({ name: "products" })
 export class Product {
@@ -24,6 +25,9 @@ export class Product {
 
   @OneToMany(() => ShopProduct, (shopProduct) => shopProduct.product)
   shopProducts: ShopProduct[];
+
+  @OneToMany(() => ProductDetail, (productDetail) => productDetail.product)
+  details: ProductDetail[];
 
   @Column({ type: "text", nullable: true })
   description: string;

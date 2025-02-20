@@ -1,20 +1,10 @@
-import express, { Request, Response } from "express";
-import { signUp, loginUser,getUsers } from "@root/Controller/user.controller";
-import { validateRequest } from "@root/Middlewares/validateRequest.middleware";
-import {
-    createUserValidation,
-    loginUserValidation,
-} from "@root/Validation/user.validation";
+import { Router } from "express";
+import { UserController } from "@root/Controller/user.controller";
+import { authenticateToken } from "@root/Middlewares/auth.middleware";
 
-export default function AccountRouter() {
-    const router = express.Router();
-    router.route('/').get(getUsers);
-    router
-        .route("/register")
-        .post(validateRequest(createUserValidation), signUp);
-    router
-        .route("/login")
-        .post(validateRequest(loginUserValidation), loginUser);
+const router = Router();
+router.route('/').get(UserController.getUsers);
+router.get("/profile", authenticateToken, UserController.getProfile);
+router.put("/profile", authenticateToken, UserController.updateProfile);
 
-    return router;
-}
+export default router;

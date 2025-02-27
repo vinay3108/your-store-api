@@ -15,24 +15,9 @@ export class CreateShopAddresses1740502992916 implements MigrationInterface {
                 country VARCHAR(100),
                 latitude DECIMAL(9,6) NOT NULL,
                 longitude DECIMAL(9,6) NOT NULL,
-                geom geography(Point, 4326) NOT NULL,
                 created_at TIMESTAMP DEFAULT now()
             );
 
-            CREATE INDEX idx_shop_addresses_geom ON shop_addresses USING GIST (geom);
-
-            CREATE OR REPLACE FUNCTION update_geom_from_latlong()
-            RETURNS TRIGGER AS $$
-            BEGIN
-                NEW.geom = ST_SetSRID(ST_MakePoint(NEW.longitude, NEW.latitude), 4326);
-                RETURN NEW;
-            END;
-            $$ LANGUAGE plpgsql;
-
-            CREATE TRIGGER trg_update_geom
-            BEFORE INSERT OR UPDATE ON shop_addresses
-            FOR EACH ROW
-            EXECUTE FUNCTION update_geom_from_latlong();
         `);
     }
 

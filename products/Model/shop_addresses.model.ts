@@ -2,7 +2,6 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, Index } from "typeor
 import { Shop } from "./shop.model";
 
 @Entity("shop_addresses")
-@Index("idx_shop_addresses_geom", ["geom"], { spatial: true })
 export class ShopAddress {
     @PrimaryGeneratedColumn()
     id: number;
@@ -33,7 +32,4 @@ export class ShopAddress {
 
     @Column({ type: "decimal", precision: 9, scale: 6 })
     longitude: number;
-
-    @Column({ type: "geography", spatialFeatureType: "Point", srid: 4326 })
-    geom: string;
 }

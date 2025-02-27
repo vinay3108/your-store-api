@@ -11,7 +11,7 @@ import { ProductDetail } from "../Model/product_details.model";
 import { ProductIngredient } from "../Model/product_ingredients.model";
 import { ProductKeyFeature } from "../Model/product_key_features.model";
 import { ProductReturnPolicy } from "../Model/product_return_policy.model";
-
+import { ShopAddress } from "../Model/shop_addresses.model";
 export default new DataSource({
     type: process.env.DB_TYPE as "postgres",
     host: process.env.DB_HOST,
@@ -31,6 +31,7 @@ export default new DataSource({
         ProductIngredient,
         ProductKeyFeature,
         ProductReturnPolicy,
+        ShopAddress
     ],
     migrations: ["./migrations/*.ts"],
     synchronize: process.env.SYNCHRONIZE === "true",

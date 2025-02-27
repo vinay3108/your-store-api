@@ -4,6 +4,7 @@ require("module-alias/register");
 import { Request, Response } from "express";
 import ProductRouter from "@root/Routes/product.route";
 import ProductDetailsRouter from "@root/Routes/product-details.route";
+import ShopAddressRouter from "@root/Routes/shop-address.route";
 import dbConnection from "./DB/db.connection";
 import dotenv from "dotenv";
 
@@ -30,6 +31,7 @@ const startApp = async () => {
         });
         app.use("/products", ProductRouter());
         app.use("/product-details", ProductDetailsRouter());
+        app.use("/shop", ShopAddressRouter());
     } catch (err) {
         console.error("Failed to start application due to DB error:", err);
         process.exit(1); // Exit the application on failure
@@ -37,3 +39,4 @@ const startApp = async () => {
 };
 
 startApp();
+

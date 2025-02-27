@@ -9,6 +9,7 @@ import { ProductDetail } from "../Model/product_details.model";
 import { ProductKeyFeature } from "../Model/product_key_features.model";
 import { ProductIngredient } from "../Model/product_ingredients.model";
 import { ProductReturnPolicy } from "../Model/product_return_policy.model";
+import { ShopAddress } from "../Model/shop_addresses.model"
 import { faker } from "@faker-js/faker";
 
 export const seedDatabase = async (dataSource: DataSource) => {
@@ -25,6 +26,7 @@ export const seedDatabase = async (dataSource: DataSource) => {
     const productKeyFeatureRepo = dataSource.getRepository(ProductKeyFeature);
     const productIngredientRepo = dataSource.getRepository(ProductIngredient);
     const productReturnPolicyRepo = dataSource.getRepository(ProductReturnPolicy);
+    const shopAddressRepo = dataSource.getRepository(ShopAddress); // Get repository for ShopAddress
 
     // Insert Brands
     const brands = [];
@@ -53,6 +55,21 @@ export const seedDatabase = async (dataSource: DataSource) => {
             owner_name: faker.person.fullName(),
         });
         shops.push(await shopRepo.save(shop));
+    }
+
+    // Insert Shop Addresses
+    for (const shop of shops) {
+        await shopAddressRepo.save({
+            shop: shop,
+            address_line1: faker.location.streetAddress(),
+            address_line2: Math.random() > 0.5 ? faker.location.secondaryAddress() : null,
+            city: faker.location.city(),
+            state: faker.location.state(),
+            postal_code: faker.location.zipCode(),
+            country: faker.location.country(),
+            latitude: faker.location.latitude(),
+            longitude: faker.location.longitude(),
+        });
     }
 
     // Insert Products

@@ -13,7 +13,6 @@ export class ShopAddressService {
         const shopAddress = this.shopAddressRepository.create({
             ...data,
             shop: { id: shopId } as any,
-            geom: `SRID=4326;POINT(${data.longitude} ${data.latitude})`,
         });
         return await this.shopAddressRepository.save(shopAddress);
     }
@@ -22,12 +21,7 @@ export class ShopAddressService {
         return await this.shopAddressRepository
             .createQueryBuilder("shop_address")
             .leftJoinAndSelect("shop_address.shop", "shop")
-            .where("ST_DWithin(shop_address.geom, ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)::geography, :radius)", {
-                lng: userLongitude,
-                lat: userLatitude,
-                radius,
-            })
-            .orderBy("ST_Distance(shop_address.geom, ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)::geography)", "ASC")
+            .orderBy()
             .getMany();
     }
 }

@@ -4,7 +4,7 @@ import { ShopAddressService } from "@root/Services/shop-address.service";
 const shopAddressService = new ShopAddressService();
 
 export class ShopAddressController {
-    async createShopAddress(req: Request, res: Response) {
+    static async createShopAddress(req: Request, res: Response) {
         try {
             const { shopId } = req.params;
             const newShopAddress = await shopAddressService.createShopAddress(parseInt(shopId), req.body);
@@ -15,7 +15,7 @@ export class ShopAddressController {
         }
     }
 
-    async findNearestShops(req: Request, res: Response) {
+    static async findNearestShops(req: Request, res: Response) {
         try {
             const { longitude, latitude, radius } = req.query;
 
